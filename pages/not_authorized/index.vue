@@ -1,3 +1,3 @@
 <template>
-    <div>Not authorized</div>
+  <div>Not authorized</div>
 </template>

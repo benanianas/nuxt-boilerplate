@@ -1,12 +1,14 @@
 <template>
-  <div>
-    main
-    <Nuxt />
-  </div>
+    <div>
+        main
+        <Nuxt />
+    </div>
 </template>
 
 <script>
-export default {}
+export default {
+    middleware: ['auth'],
+}
 </script>
 
 <style></style>

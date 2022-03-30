@@ -4,10 +4,9 @@ export default function ({ $axios, env }) {
   )
 
   $axios.onRequest((config) => {
-
     const accessToken = localStorage.getItem('accessToken')
-    if(accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`
     }
     return config
   })
@@ -20,22 +19,35 @@ export default function ({ $axios, env }) {
     const originalRequest = config
 
     if (
+      response.status === 401 &&
+      response.config.url === '/auth/refresh-tokens'
+    ) {
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+      return Promise.reject(error)
+    }
+
+    if (
       response &&
       response.status === 401 &&
       response.config.url !== '/auth/login'
     ) {
       if (!isAlreadyFetchingAccessToken) {
         isAlreadyFetchingAccessToken = true
-        $axios.post('/auth/refresh-tokens', {
+        $axios
+          .post('/auth/refresh-tokens', {
             refreshToken: localStorage.getItem('refreshToken'),
-          }).then((r) => {
-          isAlreadyFetchingAccessToken = false
+          })
+          .then((r) => {
+            isAlreadyFetchingAccessToken = false
 
-          localStorage.setItem('accessToken' ,r.data.access.token)
-          localStorage.setItem('refreshToken' ,r.data.refresh.token)
+            localStorage.setItem('accessToken', r.data.access.token)
+            localStorage.setItem('refreshToken', r.data.refresh.token)
 
-          subscribers = subscribers.filter(callback => callback(r.data.access.token))
-        })
+            subscribers = subscribers.filter((callback) =>
+              callback(r.data.access.token)
+            )
+          })
       }
       const retryOriginalRequest = new Promise((resolve) => {
         subscribers.push((accessToken) => {
