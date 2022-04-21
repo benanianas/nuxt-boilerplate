@@ -1,9 +1,6 @@
 <template>
-  <div>home
-    <br />
-    {{res}}
-    <br />
-    <b-button @click="logout">logout</b-button>
+  <div>
+    <a-button @click="logout">logout</a-button>
   </div>
 </template>
 
@@ -16,10 +13,6 @@ export default {
     return {
       res: null,
     }
-  },
-  async created(){
-    const res = await this.$axios.get('users')
-    this.res = res.data.results[0];
   },
   methods: {
     ...mapActions('auth', ['logout']),

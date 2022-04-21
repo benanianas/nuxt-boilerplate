@@ -19,6 +19,7 @@ export default function ({ $axios, env }) {
     const originalRequest = config
 
     if (
+      response &&
       response.status === 401 &&
       response.config.url === '/auth/refresh-tokens'
     ) {

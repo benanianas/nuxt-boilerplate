@@ -1,7 +1,6 @@
 <template>
     <div>
-        login
-        <b-button @click="log">login</b-button>
+        <a-button type="dashed" @click="log">Login</a-button>
     </div>
 </template>
 
